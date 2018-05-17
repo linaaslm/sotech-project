@@ -103,6 +103,16 @@
         this.event.id = Date.now()//add id
         this.event.hasDocuments = false
         this.event.pointsRetard = 0
+        this.event.textColor = 'white'
+
+        switch (this.event.type) {
+          case 'Examen':
+            this.event.color = '#42b883'
+            break
+          case 'Courses':
+            this.event.color = '#ffc502'
+            break
+        }
 
         this.event.start = moment(this.event.start).toString()
         this.event.end = moment(this.event.end).toString()
