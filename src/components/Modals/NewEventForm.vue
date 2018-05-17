@@ -114,8 +114,8 @@
             break
         }
 
-        this.event.start = moment(this.event.start).toString()
-        this.event.end = moment(this.event.end).toString()
+        this.event.start = moment(this.event.start).format('YYYY-MM-DDTHH:mm')
+        this.event.end = moment(this.event.end).format('YYYY-MM-DDTHH:mm')
         store.events.push(this.event)
 
         localStorage.setItem(store.localKey, JSON.stringify(store))
