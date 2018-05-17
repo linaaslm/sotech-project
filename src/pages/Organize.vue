@@ -31,8 +31,8 @@
     </card>
     <br>
     <transition-group name="list">
-        <h3 v-if="events.length" :key="'title'">Etape 2 : Renseignez vos réponses</h3>
-        <div v-if="events.length" v-for="(event, index) in events" :key="index">
+        <h3 v-if="store.selectedEvents.length" :key="'title'">Etape 2 : Renseignez vos réponses</h3>
+        <div v-if="store.selectedEvents.length" v-for="(event, index) in store.selectedEvents" :key="index">
             <card class="card" :title="event.title">
                 <br>
                 <div class="row">
@@ -99,7 +99,7 @@
             </card>
         </div>
         <div class="col-md-12 text-right"
-             v-if="events.length"
+             v-if="store.selectedEvents.length"
              :key="'optimize'">
             <button class="btn btn-darkgrey col-md-3">Optimiser&nbsp;&nbsp;&nbsp;<span class="ti-arrow-right"/></button>
         </div>
@@ -130,7 +130,6 @@
           start: '',
           end: ''
         },
-        events: [],
         score: {
           interet: 5,
           avancement: 5,
@@ -142,21 +141,26 @@
 
     mounted () {
       Settings.defaultLocale = 'fr'
+      store.selectedEvents = JSON.parse(JSON.stringify(store.events))
+      store.selectedEvents.forEach(event => {
+        event.score = JSON.parse(JSON.stringify(this.score))
+        //console.log(moment(event.start).diff(moment(), 'days'))
+      })
     },
 
     methods: {
       onChoseDate () {
-        this.events = []
+        store.selectedEvents = []
 
         store.events.forEach(event => {
           if (moment(event.start).isAfter(this.date.start) && moment(event.end).isBefore(this.date.end) && event.type === 'Examen') {
             let newEvent = JSON.parse(JSON.stringify(event))
             newEvent.score = JSON.parse(JSON.stringify(this.score))
-            this.events.push(newEvent)
+            store.selectedEvents.push(newEvent)
           }
         })
 
-        console.log(this.events)
+        console.log(store.selectedEvents)
 
       }
     }

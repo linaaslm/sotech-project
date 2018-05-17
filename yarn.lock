@@ -1652,7 +1652,7 @@ chokidar@^2.0.0, chokidar@^2.0.2:
     normalize-path "^2.1.1"
     path-is-absolute "^1.0.0"
     readdirp "^2.0.0"
-    upath "^1.0.0"
+    upath "^1.1.0"
   optionalDependencies:
     fsevents "^1.1.2"
 
@@ -6933,6 +6933,10 @@ unset-value@^1.0.0:
   dependencies:
     has-value "^0.3.1"
     isobject "^3.0.0"
+
+upath@1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/upath/-/upath-1.1.0.tgz#35256597e46a581db4793d0ce47fa9aebfc9fabd"
 
 upath@^1.0.0:
   version "1.0.4"

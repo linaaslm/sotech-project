@@ -6,7 +6,8 @@ const store = {
     component: '',
     value: {}
   },
-  events: []
+  events: [],
+  selectedEvents: []
 }
 
 export default store

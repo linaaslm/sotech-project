@@ -16,6 +16,7 @@
     "es6-promise": "^4.2.4",
     "luxon": "^1.2.0",
     "moment": "^2.22.1",
+    "upath": "1.1.0",
     "vue": "^2.5.13",
     "vue-avatar-component": "^1.2.4",
     "vue-clickaway": "^2.1.0",
