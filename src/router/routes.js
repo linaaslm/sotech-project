@@ -3,6 +3,7 @@ import NotFound from "../pages/NotFoundPage.vue"
 import Dashboard from "../pages/Dashboard.vue"
 import Organize from "../pages/Organize.vue"
 import Login from "../pages/Login.vue"
+import Results from "../pages/Results.vue"
 
 import store from "../config/store"
 
@@ -21,6 +22,11 @@ const routes = [
         path: "organize",
         name: "organiser",
         component: Organize
+      },
+      {
+        path: "results",
+        name: "résultats",
+        component: Results
       }
     ],
 

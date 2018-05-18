@@ -164,7 +164,8 @@
 
       },
 
-      optimizeSchedule () {
+      getTotalScore (event) {
+
         let dayScore = 0
         let coefficientScore = 0
         let pointsRetardScore = 0
@@ -172,27 +173,58 @@
         let difficulteScore = 0
         let avancementScore = 0
 
-        let totalScore = 0
+        dayScore = moment(event.start).diff(moment(), 'days') >= 10 ? 0 : (10 - moment(event.start).diff(moment(), 'days'))//Score basé sur le nombre de jours pour travailler
+        dayScore = dayScore*5//Multiplions par le coefficient
 
+        if (event.coefficient < 1) {
+          coefficientScore = event.coefficient*10*4//Si le coefficient est de 0.3 (notation efrei par exemple), on multiplie
+        } else {
+          coefficientScore = event.coefficient*4//Multiplie par le coefficient 4
+        }
+
+        pointsRetardScore = event.pointsRetard*3
+
+        assiduiteScore = (10 - event.score.assiduite)*3
+        difficulteScore = event.score.difficulte*2
+        avancementScore = 10 - event.score.avancement*3
+
+        return (dayScore + coefficientScore + pointsRetardScore + assiduiteScore + difficulteScore + avancementScore)
+      },
+
+      getWorkHours (event) {
+        let difficulteScore = event.score.difficulte*3
+        let pointsRetardScore = event.pointsRetard*3
+        let avancementScore = event.score.avancement*(-2)//Plus il y a d'avancement, mois il y a de temps de travail
+
+        let workHours = difficulteScore + pointsRetardScore + avancementScore
+        if (event.hasDocuments) {
+          workHours -= 10 //On retire deux heures de révisions si il y a droit aux documents
+        }
+        return Math.ceil(workHours/5)//On arrondit a l'entier supérieur. Jamais assez de révisions.
+
+      },
+
+      optimizeSchedule () {
+
+        /*Nous allons dans un premier temps calculer le score total selon le calcul de matrice d'aide a la décision,
+        puis nous calculerons le score correspondant au temps de révision necessaire
+         */
         store.selectedEvents.forEach(event => {
-          dayScore = moment(event.start).diff(moment(), 'days') >= 10 ? 0 : (10 - moment(event.start).diff(moment(), 'days'))//Score basé sur le nombre de jours pour travailler
-          dayScore = dayScore*5//Multiplions par le coefficient
-
-          if (event.coefficient < 1) {
-            coefficientScore = event.coefficient*10*4
-          } else {
-            coefficientScore = event.coefficient*4//Multiplie par le coefficient 4
-          }
-
-          pointsRetardScore = event.pointsRetard*3
-
-          assiduiteScore = (10 - event.score.assiduite)*3
-          difficulteScore = event.score.difficulte*2
-          avancementScore = 10 - event.score.avancement*3
-
-          totalScore = dayScore + coefficientScore + pointsRetardScore + assiduiteScore + difficulteScore + avancementScore
-          console.log(totalScore)
+          event.totalScore = this.getTotalScore(event)
+          event.workHours = this.getWorkHours(event)
         })
+
+        store.selectedEvents.sort(function(a, b){//Mettons les elements dans l'ordre décroissant en fonction de leur score, du plus fort au plus faible
+          var keyA = a.totalScore
+          var keyB = b.totalScore
+
+          if(keyA > keyB) return -1
+          if(keyA < keyB) return 1
+          return 0
+        })
+
+        console.log(store.selectedEvents)
+        this.$router.push('/results')
       }
     }
   }

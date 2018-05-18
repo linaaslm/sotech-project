@@ -8,7 +8,6 @@
   </div>
 </template>
 <script>
-import { StatsCard, ChartCard } from "@/components/index";
 import { FullCalendar } from "vue-full-calendar";
 import "fullcalendar/dist/locale/fr";
 import store from "../config/store";
