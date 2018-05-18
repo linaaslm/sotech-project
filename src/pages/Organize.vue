@@ -101,7 +101,7 @@
         <div class="col-md-12 text-right"
              v-if="store.selectedEvents.length"
              :key="'optimize'">
-            <button class="btn btn-darkgrey col-md-3">Optimiser&nbsp;&nbsp;&nbsp;<span class="ti-arrow-right"/></button>
+            <button class="btn btn-darkgrey col-md-3" @click.prevent.stop="optimizeSchedule">Optimiser&nbsp;&nbsp;&nbsp;<span class="ti-arrow-right"/></button>
         </div>
     </transition-group>
   </div>
@@ -162,6 +162,37 @@
 
         console.log(store.selectedEvents)
 
+      },
+
+      optimizeSchedule () {
+        let dayScore = 0
+        let coefficientScore = 0
+        let pointsRetardScore = 0
+        let assiduiteScore = 0
+        let difficulteScore = 0
+        let avancementScore = 0
+
+        let totalScore = 0
+
+        store.selectedEvents.forEach(event => {
+          dayScore = moment(event.start).diff(moment(), 'days') >= 10 ? 0 : (10 - moment(event.start).diff(moment(), 'days'))//Score basé sur le nombre de jours pour travailler
+          dayScore = dayScore*5//Multiplions par le coefficient
+
+          if (event.coefficient < 1) {
+            coefficientScore = event.coefficient*10*4
+          } else {
+            coefficientScore = event.coefficient*4//Multiplie par le coefficient 4
+          }
+
+          pointsRetardScore = event.pointsRetard*3
+
+          assiduiteScore = (10 - event.score.assiduite)*3
+          difficulteScore = event.score.difficulte*2
+          avancementScore = 10 - event.score.avancement*3
+
+          totalScore = dayScore + coefficientScore + pointsRetardScore + assiduiteScore + difficulteScore + avancementScore
+          console.log(totalScore)
+        })
       }
     }
   }
