@@ -4,6 +4,10 @@
     <card class="card" style="z-index: 1000;">
         <div>
             <form>
+                <div class="row container" v-if="startDateError || endDateError">
+                    <p style="text-align: center; color: red;" v-if="startDateError">Veuillez saisir une date de début antérieure à la date du jour</p>
+                    <p style="text-align: center; color: red;" v-else>La date de fin ne peut etre antérieure à la date de début</p>
+                </div>
                 <div class="row">
                     <div class="col-md-4">
                         <p>Début de période</p>
@@ -22,7 +26,7 @@
                     <div class="col-md-3">
                         <p>&nbsp;</p>
                         <button class="btn btn-darkgrey btn-block"
-                                :disabled="!date.start || !date.end"
+                                :disabled="!date.start || !date.end || startDateError || endDateError"
                                 @click.prevent.stop="onChoseDate">Suivant&nbsp;&nbsp;&nbsp;<span class="ti-arrow-right"/></button>
                     </div>
                 </div>
@@ -137,6 +141,17 @@
           assiduite: 5
         }
       }
+    },
+
+    computed: {
+      startDateError () {
+        return moment(this.date.start).isBefore(moment())
+      },
+
+      endDateError () {
+        return moment(this.date.end).isBefore(this.date.start)
+      }
+
     },
 
     mounted () {
