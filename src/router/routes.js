@@ -31,7 +31,7 @@ const routes = [
     ],
 
     beforeEnter(to, from, next) {
-      if (localStorage.getItem(store.localKey)) {
+      if (localStorage.getItem(store.user.email + store.localKey)) {
         store.user = JSON.parse(localStorage.getItem(store.localKey)).user
         store.events = JSON.parse(localStorage.getItem(store.localKey)).events
       }

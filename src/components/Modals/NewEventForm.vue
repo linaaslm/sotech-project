@@ -90,7 +90,7 @@
 
     computed: {
       disabled () {
-        return (!this.event.type || !this.event.title || !this.event.start || !this.event.end)
+        return (!this.event.type || !this.event.title || !this.event.start || !this.event.end || (this.event.type === 'Examen' && this.event.coefficient === ''))
       }
     },
 
