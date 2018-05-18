@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h3>Étape 1 : Choisir une période à optimiser</h3>
+    <h3>Étape 1 : Choisir une période à organiser</h3>
     <card class="card" style="z-index: 1000;">
         <div>
             <form>
@@ -105,7 +105,7 @@
         <div class="col-md-12 text-right"
              v-if="store.selectedEvents.length"
              :key="'optimize'">
-            <button class="btn btn-darkgrey col-md-3" @click.prevent.stop="optimizeSchedule">Optimiser&nbsp;&nbsp;&nbsp;<span class="ti-arrow-right"/></button>
+            <button class="btn btn-darkgrey col-md-3" @click.prevent.stop="optimizeSchedule">Organiser&nbsp;&nbsp;&nbsp;<span class="ti-arrow-right"/></button>
         </div>
     </transition-group>
   </div>
@@ -238,7 +238,6 @@
           return 0
         })
 
-        console.log(store.selectedEvents)
         this.$router.push('/results')
       }
     }

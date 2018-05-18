@@ -23,35 +23,91 @@
               </div>
           </div>
       </div>
+      <h3>Emploi du temps proposé :</h3>
+      <br>
+      <full-calendar :config="config"
+                     :selectable="false"
+                     :editable="false"
+                     :events="suggestedSchedule"/>
   </div>
 </template>
 <script>
 
-import store from "../config/store";
+import store from "../config/store"
+import moment from "moment"
+import { FullCalendar } from "vue-full-calendar";
+import "fullcalendar/dist/locale/fr";
 
 export default {
   components: {
-
+    FullCalendar
   },
 
   data() {
     return {
       store,
-
+      config: {
+        locale: 'fr',
+      },
+      suggestedSchedule: []
     }
   },
 
-  mounted () {
+  mounted() {
+    this.suggestedSchedule = JSON.parse(JSON.stringify(store.events))
     if (!store.selectedEvents.length) {
       this.$router.push('/dashboard')
+    }
+
+    let m = moment()
+    let nextHour = m.minute() || m.second() || m.millisecond() ? m.add(1, 'hour').startOf('hour') : m.startOf('hour')
+    //TODO switcher la date au lendemain 10h si l'heure de début de matière dépasse 22h30.
+    for (let j = 0; j < store.selectedEvents.length; j++) {
+      let event = store.selectedEvents[j]
+
+        for (let i = 0; i < 96; i++) { //Recherche d'horaire dispo sur 96 tranches de 30 minutes soit 2 jours
+        console.log(nextHour.format('YYYY-MM-DDTHH:mm'))
+          if(!this.isScheduleTaken(event, nextHour)){
+            let newEvent = {
+              title: 'Révisions ' + event.title,
+              start: nextHour.format('YYYY-MM-DDTHH:mm'),
+              end: nextHour.add(event.workHours, 'hours').format('YYYY-MM-DDTHH:mm'),
+              textColor: 'white',
+              color: '#FF0000'
+            }
+            nextHour.add(30, 'minutes')
+            this.suggestedSchedule.push(newEvent)
+            break
+          } else {
+            nextHour.add(30, 'minutes')
+          }
+
+        }
     }
   },
 
   methods: {
-    getHoursEstimated (event) {
+    getHoursEstimated(event) {
       let message = event.workHours === 1 ? ' heure de révisions estimée' : ' heures de révisions estimées'
       return event.workHours + message
+    },
+
+    isScheduleTaken(event, startDate) {
+      let schedule = JSON.parse(JSON.stringify(this.suggestedSchedule))
+      for (let i = 0; i < schedule.length; i++) {
+        let value = schedule[i]
+
+        if ((moment(startDate).isAfter(value.start) && moment(startDate).add(event.workHours, 'hours').isBefore(value.end))
+          || (moment(startDate).isBefore(value.start) && moment(startDate).add(event.workHours, 'hours').isAfter(value.end))
+          || (moment(startDate).isAfter(value.start) && moment(startDate).isBefore(value.end))
+          || (moment(startDate).add(event.workHours, 'hours').isAfter(value.start) && moment(startDate).add(event.workHours, 'hours').isBefore(schedule.end))
+        )
+        {
+          return true
+        }
+      }
+      return false
     }
   }
-};
+}
 </script>
