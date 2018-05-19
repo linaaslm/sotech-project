@@ -102,10 +102,19 @@
                 </div>
             </card>
         </div>
-        <div class="col-md-12 text-right"
-             v-if="store.selectedEvents.length"
-             :key="'optimize'">
-            <button class="btn btn-darkgrey col-md-3" @click.prevent.stop="optimizeSchedule">Organiser&nbsp;&nbsp;&nbsp;<span class="ti-arrow-right"/></button>
+        <div class="row" v-if="store.selectedEvents.length" :key="'finalrow'">
+            <div class="col-md-4"
+                 :key="'express'">
+                <toggle-button v-model="store.express"
+                               :color="{checked: '#444444', unchecked: '#cccccc'}"
+                               :height="30"
+                               :width="65"/>&nbsp;&nbsp;&nbsp;&nbsp;<span>{{ store.express ? 'Express' : 'Classique' }}</span>
+            </div>
+            <div class="col-md-8 text-right"
+                 v-if="store.selectedEvents.length"
+                 :key="'optimize'">
+                <button class="btn btn-darkgrey col-md-3" @click.prevent.stop="optimizeSchedule">Organiser&nbsp;&nbsp;&nbsp;<span class="ti-arrow-right"/></button>
+            </div>
         </div>
     </transition-group>
   </div>

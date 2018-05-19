@@ -7,7 +7,8 @@ const store = {
     value: {}
   },
   events: [],
-  selectedEvents: []
+  selectedEvents: [],
+  express: false
 }
 
 export default store

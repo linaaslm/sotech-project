@@ -54,6 +54,8 @@ export default {
   },
 
   mounted() {
+
+    this.getFirstExam()
     this.suggestedSchedule = JSON.parse(JSON.stringify(store.events))
     if (!store.selectedEvents.length) {
       this.$router.push('/dashboard')
@@ -61,9 +63,19 @@ export default {
 
     let m = moment()
     let nextHour = m.minute() || m.second() || m.millisecond() ? m.add(1, 'hour').startOf('hour') : m.startOf('hour')
-    //TODO switcher la date au lendemain 10h si l'heure de début de matière dépasse 22h30.
+
+    if (!store.express) {
+
+      let event = this.getFirstExam()
+
+      let daysUntilStart = Math.floor(moment(event.start).diff(nextHour, 'days')/2)
+      nextHour.add(daysUntilStart, 'days')
+      nextHour.add((nextHour.get('hour') + 10)*(-1), 'hours')
+      nextHour.add(-1*nextHour.get('minutes'))
+    }
+
     for (let j = 0; j < store.selectedEvents.length; j++) {
-      let event = store.selectedEvents[j]
+        let event = store.selectedEvents[j]
 
         for (let i = 0; i < 96; i++) { //Recherche d'horaire dispo sur 96 tranches de 30 minutes soit 2 jours
           if ((nextHour.get('hour') >= 0 && nextHour.get('hour') < 9) || nextHour.get('hour') === 23) {
@@ -78,7 +90,11 @@ export default {
               textColor: 'white',
               color: '#FF0000'
             }
-            nextHour.add(30, 'minutes')
+            if (store.express) {
+              nextHour.add(30, 'minutes')
+            } else {
+              nextHour.add(1, 'days')
+            }
             this.suggestedSchedule.push(newEvent)
             break
           } else {
@@ -110,6 +126,24 @@ export default {
         }
       }
       return false
+    },
+
+    getFirstExam () {
+      let exams = JSON.parse(JSON.stringify(store.selectedEvents))
+      console.log(exams)
+
+      if (exams.length > 1) {
+          exams.sort(function(a, b){//Mettons les elements dans l'ordre croissant en fonction de leur date de début
+            var keyA = a.start
+            var keyB = b.start
+
+            if(moment(keyA).isBefore(keyB)) return 1
+            if(moment(keyA).isAfter(keyB)) return -1
+            return 0
+          })
+      }
+
+      return exams[0]
     }
   }
 }
