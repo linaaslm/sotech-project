@@ -214,6 +214,10 @@
         if (event.hasDocuments) {
           workHours -= 10 //On retire deux heures de révisions si il y a droit aux documents
         }
+
+        if (workHours < 0) {
+          workHours = 0//Si l'IA calcule qu'il n'y a pas besoin de révisions
+        }
         return Math.ceil(workHours/5)//On arrondit a l'entier supérieur. Jamais assez de révisions.
 
       },
