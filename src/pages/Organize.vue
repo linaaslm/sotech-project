@@ -156,10 +156,9 @@
 
     mounted () {
       Settings.defaultLocale = 'fr'
-      store.selectedEvents = JSON.parse(JSON.stringify(store.events))
+
       store.selectedEvents.forEach(event => {
         event.score = JSON.parse(JSON.stringify(this.score))
-        //console.log(moment(event.start).diff(moment(), 'days'))
       })
     },
 

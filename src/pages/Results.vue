@@ -66,7 +66,10 @@ export default {
       let event = store.selectedEvents[j]
 
         for (let i = 0; i < 96; i++) { //Recherche d'horaire dispo sur 96 tranches de 30 minutes soit 2 jours
-        console.log(nextHour.format('YYYY-MM-DDTHH:mm'))
+          if ((nextHour.get('hour') >= 0 && nextHour.get('hour') < 9) || nextHour.get('hour') === 23) {
+            let hoursToSubstract = nextHour.get('hour') === 23 ? -1 : nextHour.get('hour')
+            nextHour.add(10 - hoursToSubstract, 'hours') //On ajoute des heures si il est entre 23h et 8h59
+          }
           if(!this.isScheduleTaken(event, nextHour)){
             let newEvent = {
               title: 'Révisions ' + event.title,
@@ -97,10 +100,10 @@ export default {
       for (let i = 0; i < schedule.length; i++) {
         let value = schedule[i]
 
-        if ((moment(startDate).isAfter(value.start) && moment(startDate).add(event.workHours, 'hours').isBefore(value.end))
-          || (moment(startDate).isBefore(value.start) && moment(startDate).add(event.workHours, 'hours').isAfter(value.end))
+        if ((moment(startDate).isAfter(value.start) && moment(startDate).clone().add(event.workHours, 'hours').isBefore(value.end))
+          || (moment(startDate).isBefore(value.start) && moment(startDate).clone().add(event.workHours, 'hours').isAfter(value.end))
           || (moment(startDate).isAfter(value.start) && moment(startDate).isBefore(value.end))
-          || (moment(startDate).add(event.workHours, 'hours').isAfter(value.start) && moment(startDate).add(event.workHours, 'hours').isBefore(schedule.end))
+          || (moment(startDate).clone().add(event.workHours, 'hours').isAfter(value.start) && moment(startDate).clone().add(event.workHours, 'hours').isBefore(value.end))
         )
         {
           return true
